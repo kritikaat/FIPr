@@ -1,0 +1,379 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Ratings {
+  id                 Int      @id @default(autoincrement())
+  iprRating          Int
+  fciptRating        Int
+  knowledge          Int
+  explanationsIPR    Int
+  explanationsFCIPT  Int
+  knowledgeBefore    Int
+  knowledgeAfter     Int
+  technicalContents  Int
+  easeOfUnderstanding Int
+  feedbackFormId     Int      @unique
+  feedbackForm       feedbackForm @relation(fields: [feedbackFormId], references: [id])
+
+  @@map("ratings")
+}
+
+model feedbackForm {
+  id                 Int      @id @default(autoincrement())
+  institutionName    String
+  website            String
+  visitDate          DateTime
+  staffName          String
+  staffEmail         String
+  staffMobile        String
+  totalStudents      Int
+  accompanyingStaff  Int
+  sources            String[]
+  campuses           String[]
+  ratings            Ratings?
+  best               String?
+  worst              String?
+  suggestions        String?
+  comments           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("feedback_forms")
+}
+
+model Visitor {
+  id              Int      @id @default(autoincrement())
+  institutionName String
+  studentBranch   String
+  studentSem      Int
+  numStudents     Int
+  numFaculty      Int
+  name            String
+  position        String
+  email           String
+  mobile          String
+  campus          String[]
+  ipr_time        String?
+  fcipt_time      String?
+  visit_date      DateTime
+  visit_time      String
+  materials       String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+
+model School {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  address                 String
+  city                    String
+  pincode                 String
+  affiliationNumber       String
+  coordinatorTeacherName  String
+  coordinatorTeacherMobile String
+  accompanyingTeachers    AccompanyingTeacher[]   @relation("SchoolTeachers")
+  competitions            Competition[]           @relation("SchoolCompetitions")
+
+  StudentModel1           StudentModel1[]         @relation("SchoolStudentModel1")
+  StudentModel2           StudentModel2[]         @relation("SchoolStudentModel2")
+  EloquenceEnglish        EloquenceEnglish[]      @relation("SchoolEloquenceEnglish")
+  EloquenceHindi          EloquenceHindi[]        @relation("SchoolEloquenceHindi")
+  EloquenceGujarati       EloquenceGujarati[]     @relation("SchoolEloquenceGujarati")
+  EssayEnglish            EssayEnglish[]          @relation("SchoolEssayEnglish")
+  EssayHindi              EssayHindi[]            @relation("SchoolEssayHindi")
+  EssayGujarati           EssayGujarati[]         @relation("SchoolEssayGujarati")
+  Poster                  Poster[]                @relation("SchoolPoster")
+  Skit                    Skit[]                  @relation("SchoolSkit")
+  TeacherModel            TeacherModel[]          @relation("SchoolTeacherModel")
+
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  Quiz Quiz[] @relation("SchoolQuiz")
+}
+
+model Quiz {
+  id                          Int      @id @default(autoincrement())
+  participant1Name            String
+  participant1Gender          String
+  participant1Class           String
+  participant1Accommodation   String
+  participant2Name           String?   // Optional
+  participant2Gender         String?
+  participant2Class          String?
+  participant2Accommodation  String?
+  declaration                Boolean
+  schoolId                   Int
+  school                     School   @relation("SchoolQuiz", fields: [schoolId], references: [id])
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
+
+model AccompanyingTeacher {
+  id                     Int                     @id @default(autoincrement())
+  name                   String
+  gender                 String                  // "Male", "Female", "Other"
+  requiresAccommodation  Boolean
+  school                 School                  @relation("SchoolTeachers", fields: [schoolId], references: [id])
+  schoolId               Int
+
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+}
+
+model Competition {
+  id                     Int                     @id @default(autoincrement())
+  title                  String                  // Title of the competition
+  school                 School                  @relation("SchoolCompetitions", fields: [schoolId], references: [id])
+  schoolId               Int
+
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+}
+
+model StudentModel1 {
+  id                          Int      @id @default(autoincrement())
+  participant1Name             String
+  participant1Gender           String
+  participant1Class            String
+  participant1Accommodation    String
+  participant2Name             String
+  participant2Gender           String
+  participant2Class            String
+  participant2Accommodation    String
+  additionalRequirements       String? // Optional field
+  declaration                  Boolean
+  writeup                      String  // Path to uploaded file
+  schoolId                     Int
+  school                       School  @relation("SchoolStudentModel1", fields: [schoolId], references: [id])
+
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+}
+
+model StudentModel2 {
+  id                          Int      @id @default(autoincrement())
+  participant1Name             String
+  participant1Gender           String
+  participant1Class            String
+  participant1Accommodation    String
+  participant2Name             String
+  participant2Gender           String
+  participant2Class            String
+  participant2Accommodation    String
+  additionalRequirements       String? // Optional field
+  declaration                  Boolean
+  writeup                      String  // Path to uploaded file
+  schoolId                     Int
+  school                       School  @relation("SchoolStudentModel2", fields: [schoolId], references: [id])
+
+  createdAt                    DateTime @default(now())
+  updatedAt                    DateTime @updatedAt
+}
+
+model EloquenceEnglish {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEloquenceEnglish", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model EloquenceHindi {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEloquenceHindi", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model EloquenceGujarati {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEloquenceGujarati", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model EssayEnglish {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEssayEnglish", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model EssayHindi {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEssayHindi", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model EssayGujarati {
+  id                          Int      @id @default(autoincrement())
+  participantName             String
+  participantGender           String
+  participantClass            String
+  accommodationRequired       String
+  essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
+  declaration                 Boolean
+  schoolId                    Int
+  school                      School   @relation("SchoolEssayGujarati", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model Poster {
+  id                          Int      @id @default(autoincrement())
+  participant1Name            String
+  participant1Gender          String
+  participant1Class           String
+  participant1Accommodation   String
+  participant1Declaration     Boolean
+  participant2Name            String?  // Optional
+  participant2Gender          String?
+  participant2Class           String?
+  participant2Accommodation   String?
+  participant2Declaration     Boolean?
+
+  schoolId                    Int
+  school                      School   @relation("SchoolPoster", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model Skit {
+  id                          Int      @id @default(autoincrement())
+  participant1Name            String
+  participant1Gender          String
+  participant1Class           String
+  participant1Accommodation   String
+  participant2Name            String?  // Optional
+  participant2Gender          String?
+  participant2Class           String?
+  participant2Accommodation   String?
+  participant3Name            String?
+  participant3Gender          String?
+  participant3Class           String?
+  participant3Accommodation   String?
+  participant4Name            String?
+  participant4Gender          String?
+  participant4Class           String?
+  participant4Accommodation   String?
+  participant5Name            String?
+  participant5Gender          String?
+  participant5Class           String?
+  participant5Accommodation   String?
+  participant6Name            String?
+  participant6Gender          String?
+  participant6Class           String?
+  participant6Accommodation   String?
+  additionalRequirements      String?  // Optional
+  declaration                 Boolean
+  videoLink                   String
+
+  schoolId                    Int
+  school                      School   @relation("SchoolSkit", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model TeacherModel {
+  id                          Int      @id @default(autoincrement())
+  teacherName                 String
+  teacherGender               String
+  accommodationRequired       String
+  additionalRequirements      String?  // Optional
+  declaration                 Boolean
+  writeup                     String  // URL or path to the uploaded PDF
+
+  schoolId                    Int
+  school                      School   @relation("SchoolTeacherModel", fields: [schoolId], references: [id])
+
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model SchoolRegistration {
+  id                Int      @id @default(autoincrement())
+  schoolName        String   @db.VarChar(255)
+  email            String   @db.VarChar(255) @unique
+  address          String   @db.VarChar(255)
+  cityVillage      String   @db.VarChar(100)
+  pincode          String   @db.VarChar(10)
+  affiliationNumber String   @db.VarChar(100)
+  password         String   @db.VarChar(255)  // Added this field
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model BusyDate {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date])
+}
