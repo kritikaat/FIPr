@@ -74,6 +74,40 @@ model Visitor {
   updatedAt       DateTime @updatedAt
 }
 
+model IPRExhibitionForm {
+  id                 Int     @id @default(autoincrement())
+  hallDimension      String
+  isEnclosedHall     String
+  canBeDarkened      String
+  hasCooling         String
+  isGroundFloor      String
+  hasStorageSpace    String
+  powerOutlets       Int
+  numTables          Int
+  vrSpace            String
+  hasWifi            String
+  lectureHallArea    String
+  seatingCapacity    Int
+  hasAVFacilities    String
+  distanceFromExhibition String
+  accommodationProvided String
+  localTransportation String
+  secureParkingSpace String
+  manpowerForLoading String
+  contactPersonName  String
+  contactPersonMobile String
+  contactPersonEmail String
+  venueLocation      String
+  teacherInvitation  Int
+  teacherRegistration Int
+  providesWritingMaterials String
+  providesRefreshments String
+  quizForSchoolStudents String
+  quizTeamSelection  String
+  quizArrangements   String
+  quizRefreshments   String
+}
+
 
 model School {
   id                      Int                     @id @default(autoincrement())
@@ -115,7 +149,7 @@ model Quiz {
   participant2Gender         String?
   participant2Class          String?
   participant2Accommodation  String?
-  declaration                Boolean
+  declaration                String
   schoolId                   Int
   school                     School   @relation("SchoolQuiz", fields: [schoolId], references: [id])
   createdAt                  DateTime @default(now())
@@ -127,7 +161,7 @@ model AccompanyingTeacher {
   id                     Int                     @id @default(autoincrement())
   name                   String
   gender                 String                  // "Male", "Female", "Other"
-  requiresAccommodation  Boolean
+  requiresAccommodation  String
   school                 School                  @relation("SchoolTeachers", fields: [schoolId], references: [id])
   schoolId               Int
 
@@ -156,7 +190,7 @@ model StudentModel1 {
   participant2Class            String
   participant2Accommodation    String
   additionalRequirements       String? // Optional field
-  declaration                  Boolean
+  declaration                  String
   writeup                      String  // Path to uploaded file
   schoolId                     Int
   school                       School  @relation("SchoolStudentModel1", fields: [schoolId], references: [id])
@@ -176,7 +210,7 @@ model StudentModel2 {
   participant2Class            String
   participant2Accommodation    String
   additionalRequirements       String? // Optional field
-  declaration                  Boolean
+  declaration                  String
   writeup                      String  // Path to uploaded file
   schoolId                     Int
   school                       School  @relation("SchoolStudentModel2", fields: [schoolId], references: [id])
@@ -191,7 +225,7 @@ model EloquenceEnglish {
   participantGender           String
   participantClass            String
   accommodationRequired       String
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEloquenceEnglish", fields: [schoolId], references: [id])
 
@@ -205,7 +239,7 @@ model EloquenceHindi {
   participantGender           String
   participantClass            String
   accommodationRequired       String
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEloquenceHindi", fields: [schoolId], references: [id])
 
@@ -219,7 +253,7 @@ model EloquenceGujarati {
   participantGender           String
   participantClass            String
   accommodationRequired       String
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEloquenceGujarati", fields: [schoolId], references: [id])
 
@@ -234,7 +268,7 @@ model EssayEnglish {
   participantClass            String
   accommodationRequired       String
   essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEssayEnglish", fields: [schoolId], references: [id])
 
@@ -249,7 +283,7 @@ model EssayHindi {
   participantClass            String
   accommodationRequired       String
   essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEssayHindi", fields: [schoolId], references: [id])
 
@@ -264,7 +298,7 @@ model EssayGujarati {
   participantClass            String
   accommodationRequired       String
   essayFileUrl                String   @map("essay_file_url") // URL or path to the uploaded PDF
-  declaration                 Boolean
+  declaration                 String
   schoolId                    Int
   school                      School   @relation("SchoolEssayGujarati", fields: [schoolId], references: [id])
 
@@ -278,12 +312,12 @@ model Poster {
   participant1Gender          String
   participant1Class           String
   participant1Accommodation   String
-  participant1Declaration     Boolean
+  participant1Declaration     String
   participant2Name            String?  // Optional
   participant2Gender          String?
   participant2Class           String?
   participant2Accommodation   String?
-  participant2Declaration     Boolean?
+  participant2Declaration     String?
 
   schoolId                    Int
   school                      School   @relation("SchoolPoster", fields: [schoolId], references: [id])
@@ -319,7 +353,7 @@ model Skit {
   participant6Class           String?
   participant6Accommodation   String?
   additionalRequirements      String?  // Optional
-  declaration                 Boolean
+  declaration                 String
   videoLink                   String
 
   schoolId                    Int
@@ -335,7 +369,7 @@ model TeacherModel {
   teacherGender               String
   accommodationRequired       String
   additionalRequirements      String?  // Optional
-  declaration                 Boolean
+  declaration                 String
   writeup                     String  // URL or path to the uploaded PDF
 
   schoolId                    Int

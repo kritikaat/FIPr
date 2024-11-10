@@ -1,14 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
-<<<<<<< HEAD
 import PublishModal from './PublishModal';
 import { Calendar as CalendarIcon, Users, Search, Filter, Download, Trash2,Info } from 'lucide-react';
-=======
-import Calendar from './Calendar';
-import PublishModal from './PublishModal';
-import { Send, Calendar as CalendarIcon, Users, Search, Filter, Download, Trash2, Edit,Info,ChevronDown } from 'lucide-react';
->>>>>>> c4a42063d25703a82027a0e39ade332904b2f526
 import { exportToExcel, exportToCSV } from './exportUtils';
 import axios from 'axios';
 import AdminCalendar from './AdminCalendar';
